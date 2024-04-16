@@ -8,7 +8,7 @@ param environmentName string = resourceGroup().name
 param appIdentityName string = 'appIdentity'
 param runnerIdentityName string = 'runnerIdentity'
 param acrName string
-param runnerLabel string = 'htschoenfelder-runner'
+param runnerLabel string = 'demo-azure-container-apps-runner'
 
 resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
@@ -109,6 +109,10 @@ resource githubRunnerJob 'Microsoft.App/jobs@2023-05-01' = {
             {
               name: 'REGISTRATION_TOKEN_API_URL'
               value: 'https://api.github.com/repos/${repoOwner}/${repoName}/actions/runners/registration-token'
+            }
+            {
+              name: 'LABEL'
+              value: runnerLabel
             }
           ]
         }

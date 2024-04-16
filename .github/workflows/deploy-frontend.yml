@@ -10,13 +10,16 @@ on:
       - "web-application/frontend/**"
       - ".github/workflows/deploy-frontend.yml"
 
+permissions:
+    id-token: write
+    contents: read
 jobs:
     build-and-deploy-app:
         environment: production
         env:
             RESOURCEGROUP_NAME: ${{ vars.RESOURCEGROUP_NAME }}
             ACR_NAME: ${{ vars.ACR_NAME }}
-        runs-on: [htschoenfelder-runner]
+        runs-on: [demo-azure-container-apps-runner]
         container: mcr.microsoft.com/azure-cli:2.59.0
         steps:
         - name: Checkout
