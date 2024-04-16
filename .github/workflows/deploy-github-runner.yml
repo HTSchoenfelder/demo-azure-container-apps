@@ -24,7 +24,7 @@ jobs:
             REPO_NAME: ${{ vars.REPO_NAME }}
             PAT_FOR_GITHUB_RUNNER: ${{ secrets.PAT_FOR_GITHUB_RUNNER }}
         runs-on: [ubuntu-latest]
-        container: mcr.microsoft.com/azure-cli:2.59.0
+        container: mcr.microsoft.com/azure-cli:latest
         steps:
         - name: Checkout
           uses: actions/checkout@v4
