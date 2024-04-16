@@ -1,0 +1,37 @@
+name: Deploy github-runner
+run-name: Deploy github-runner ${{github.event.head_commit.id}}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "github-runner/**"
+      - ".github/workflows/deploy-github-runner.yml"
+jobs:
+    build-and-deploy-app:
+        environment: production
+        env:
+            RESOURCEGROUP_NAME: ${{ vars.RESOURCEGROUP_NAME }}
+            ACR_NAME: ${{ vars.ACR_NAME }}
+            REPO_OWNER: ${{ vars.REPO_OWNER }}
+            REPO_NAME: ${{ vars.REPO_NAME }}
+            PAT_FOR_GITHUB_RUNNER: ${{ secrets.PAT_FOR_GITHUB_RUNNER }}
+        runs-on: [ubuntu-latest]
+        container: mcr.microsoft.com/azure-cli:2.59.0
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Log in to Azure
+          uses: azure/login@v2
+          with:
+            client-id: ${{ vars.AZURE_CLIENT_ID }}
+            tenant-id: ${{ vars.AZURE_TENANT_ID }}
+            subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        
+        -   name: Deploy
+            working-directory: ./github-runner
+            run: |
+                ./deploy.sh

@@ -1,0 +1,35 @@
+name: Deploy reverse-proxy
+run-name: Deploy reverse-proxy ${{github.event.head_commit.id}}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "web-application/reverse-proxy/**"
+      - ".github/workflows/deploy-reverse-proxy.yml"
+
+jobs:
+    build-and-deploy-app:
+        environment: production
+        env:
+            RESOURCEGROUP_NAME: ${{ vars.RESOURCEGROUP_NAME }}
+            ACR_NAME: ${{ vars.ACR_NAME }}
+        runs-on: [htschoenfelder-runner]
+        container: mcr.microsoft.com/azure-cli:2.59.0
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Log in to Azure
+          uses: azure/login@v2
+          with:
+            client-id: ${{ vars.AZURE_CLIENT_ID }}
+            tenant-id: ${{ vars.AZURE_TENANT_ID }}
+            subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        
+        -   name: Deploy
+            working-directory: ./web-application/reverse-proxy
+            run: |
+                ./deploy.sh

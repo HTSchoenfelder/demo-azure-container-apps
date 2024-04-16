@@ -1,0 +1,29 @@
+server {
+    listen       80;
+    server_name  _;   
+
+    location /api/ {
+        proxy_pass ${BACKEND_URL}/api/;
+        proxy_ssl_server_name on;
+        proxy_http_version 1.1;
+    }
+
+    location /principal-name {
+    default_type text/plain;
+    return 200 $http_x_ms_client_principal_name;
+}
+
+    location / {
+        proxy_pass ${FRONTEND_URL};
+        proxy_ssl_server_name on;
+        proxy_http_version 1.1;
+        add_header X-Original-User-Agent $http_user_agent;
+        add_header X-Original-MS-CLIENT-PRINCIPAL-NAME $http_x_ms_client_principal_name;
+        add_header X-Original-MS-TOKEN-AAD-ID-TOKEN $http_x_ms_token_aad_id_token;
+    }    
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}

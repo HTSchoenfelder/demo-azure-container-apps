@@ -1,0 +1,40 @@
+
+networks:
+  web-application:
+    driver: bridge
+    name: web-application
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+
+services:
+  reverse-proxy:
+    image: ${DOCKER_REGISTRY-}reverse-proxy
+    container_name: reverse-proxy
+    build:
+      context: ./reverse-proxy/
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - web-application
+    environment:
+      - BACKEND_URL=${BACKEND_URL}:8080
+      - FRONTEND_URL=${FRONTEND_URL}
+  backend:
+    image: ${DOCKER_REGISTRY-}backend
+    container_name: backend
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    networks:
+      - web-application
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    container_name: frontend
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    networks:
+      - web-application

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Forecast</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+    tr:hover {background-color: #f5f5f5;}
+</style>
+</head>
+<body>
+<h2>Weather Forecast</h2>
+<table id="weatherTable">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Temperature (°C)</th>
+            <th>Temperature (°F)</th>
+            <th>Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+async function fetchWeather() {
+    const response = await fetch('/api/weatherforecast');
+    const weatherData = await response.json();
+
+    const table = document.getElementById('weatherTable').getElementsByTagName('tbody')[0];
+    weatherData.forEach(item => {
+        let row = table.insertRow();
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
+        cell1.innerHTML = item.date;
+        cell2.innerHTML = item.temperatureC;
+        cell3.innerHTML = item.temperatureF;
+        cell4.innerHTML = item.summary;
+    });
+}
+
+fetchWeather();
+</script>
+</body>
+</html>
