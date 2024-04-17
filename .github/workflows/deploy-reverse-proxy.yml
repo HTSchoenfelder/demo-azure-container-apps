@@ -17,7 +17,6 @@ jobs:
             RESOURCEGROUP_NAME: ${{ vars.RESOURCEGROUP_NAME }}
             ACR_NAME: ${{ vars.ACR_NAME }}
         runs-on: [demo-azure-container-apps-runner]
-        container: mcr.microsoft.com/azure-cli:2.59.0
         steps:
         - name: Checkout
           uses: actions/checkout@v4
